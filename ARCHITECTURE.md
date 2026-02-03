@@ -789,6 +789,28 @@ Error: .env file not found. Please mount it as a volume.
 
 ---
 
+### 8. multiprocessing resource_tracker警告
+
+**症状**:
+```
+UserWarning: resource_tracker: There appear to be 3 leaked semaphore objects to clean up at shutdown
+```
+
+**原因**: AIPerfがmultiprocessingを使用しており、終了時にセマフォが適切にクリーンアップされていないためです。これはAIPerfライブラリ側の既知の問題です。
+
+**解決策**: 
+- この警告は機能的な問題を引き起こしません。無視して問題ありません。
+- 警告を抑制したい場合は、環境変数を設定：
+  ```bash
+  export PYTHONWARNINGS="ignore::UserWarning:multiprocessing.resource_tracker"
+  ```
+- または、`make profile`実行時に設定：
+  ```bash
+  PYTHONWARNINGS="ignore::UserWarning:multiprocessing.resource_tracker" make profile
+  ```
+
+---
+
 ## 参考資料
 
 - [NVIDIA AIPerf公式ドキュメント](https://github.com/NVIDIA/AIPerf)

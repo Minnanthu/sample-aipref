@@ -293,6 +293,27 @@ artifacts/
 2. URLとモデル名が正しいか確認
 3. 推論サーバがストリーミングをサポートしているか確認
 
+### Warning: resource_tracker: There appear to be leaked semaphore objects
+
+ベンチマーク実行後に以下のような警告が表示される場合があります：
+
+```
+UserWarning: resource_tracker: There appear to be 3 leaked semaphore objects to clean up at shutdown
+```
+
+**原因**: AIPerfがmultiprocessingを使用しており、終了時にセマフォが適切にクリーンアップされていないためです。
+
+**対処方法**: 
+- この警告は機能的な問題を引き起こしません。無視して問題ありません。
+- 警告を抑制したい場合は、環境変数を設定：
+  ```bash
+  export PYTHONWARNINGS="ignore::UserWarning:multiprocessing.resource_tracker"
+  ```
+- または、`make profile`実行時に設定：
+  ```bash
+  PYTHONWARNINGS="ignore::UserWarning:multiprocessing.resource_tracker" make profile
+  ```
+
 ## Linux検証サーバへの移行
 
 このリポジトリは、Linux検証サーバでも同じコマンドで動作するように設計されています。
