@@ -1,0 +1,12 @@
+# NVIDIA AIPerf
+aiperf
+
+# OpenAI SDK (for smoke test)
+openai>=1.0.0
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=7.0.0
+pytest-mock>=3.10.0

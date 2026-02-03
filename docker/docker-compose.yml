@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  aiperf-client:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: aiperf-client:latest
+    volumes:
+      # .envファイルをマウント（ホスト側の.envをコンテナにマウント）
+      - ../.env:/app/.env:ro
+      # Artifactsディレクトリをマウント（結果をホストに保存）
+      - ../artifacts:/app/artifacts
+      # Promptsディレクトリをマウント（カスタムプロンプトを使用する場合）
+      - ../prompts:/app/prompts:ro
+    environment:
+      # 環境変数は.envファイルから読み込まれる
+    networks:
+      - aiperf-network
+    # デフォルトコマンド（上書き可能）
+    command: ["help"]
+
+networks:
+  aiperf-network:
+    driver: bridge
