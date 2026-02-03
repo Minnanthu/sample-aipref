@@ -64,7 +64,7 @@ sample-aipref/
 │       ├── benchmark_results.jsonl # ベンチマーク結果
 │       └── logs/                   # 実行ログ
 │
-├── venv/ または venv312/       # Python仮想環境（gitignore）
+├── venv/                       # Python仮想環境（gitignore）
 ├── summary.tsv                 # 生成されたサマリ（gitignore）
 └── summary.md                  # 生成されたサマリ（gitignore）
 ```
@@ -187,17 +187,18 @@ Python 3.12の仮想環境を優先的に作成します。
 
 **処理内容**:
 1. 仮想環境がアクティブでない場合:
-   - `venv312`ディレクトリが存在する場合は再利用
+   - `venv`ディレクトリが存在する場合は再利用
    - Python 3.12を検出（`python3.12`コマンドまたは`$HOME/.pyenv/versions/3.12.7/bin/python3`）
-   - Python 3.12が見つかれば`venv312`を作成、見つからなければデフォルトの`venv`を作成
+   - Python 3.12が見つかれば`venv`を作成、見つからない場合はエラー終了
 2. 依存関係のインストール:
-   - `pip install --upgrade pip`
-   - `pip install -r requirements.txt`（aiperf, openai, python-dotenv）
+   - `venv/bin/pip install --upgrade pip`
+   - `venv/bin/pip install -r requirements.txt`（aiperf, openai, python-dotenv）
 
 **ポイント**:
-- Python 3.12を優先（AIPerf 0.4.0はPython 3.14と非互換）
+- Python 3.12が必須（AIPerf 0.4.0はPython 3.14と非互換）
 - `pyenv`でインストールされたPython 3.12.7を自動検出
 - 既存の仮想環境がある場合は再利用
+- Python 3.12が見つからない場合はエラー終了
 
 #### `make smoke`
 
@@ -499,7 +500,7 @@ Dockerコンテナのエントリーポイントスクリプトです。
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     make setup                              │
-│  - Python仮想環境の作成（venv312優先）                      │
+│  - Python仮想環境の作成（venv、Python 3.12必須）            │
 │  - 依存関係のインストール（aiperf, openai, python-dotenv）  │
 └─────────────────────────────────────────────────────────────┘
                             ↓
@@ -596,9 +597,10 @@ Dockerコンテナのエントリーポイントスクリプトです。
 
 **解決策**: Python 3.12を優先的に使用します。
 
-- `Makefile`の`setup`ターゲットでPython 3.12を優先的に検出
+- `Makefile`の`setup`ターゲットでPython 3.12を必須として検出
 - `pyenv`でインストールされたPython 3.12.7を自動検出
-- `venv312`ディレクトリに仮想環境を作成
+- `venv`ディレクトリに仮想環境を作成
+- Python 3.12が見つからない場合はエラー終了
 
 ### 2. OpenAI API統合
 
@@ -664,11 +666,11 @@ AttributeError: 'ForwardRef' object has no attribute 'default_parameter'
 # Python 3.12をインストール（pyenv使用）
 pyenv install 3.12.7
 
-# venv312を作成
+# venvを作成
 make setup
 
-# venv312をアクティベート
-source venv312/bin/activate
+# venvをアクティベート
+source venv/bin/activate
 ```
 
 ---
@@ -799,7 +801,7 @@ Error: .env file not found. Please mount it as a volume.
 ## 更新履歴
 
 - **2024-12**: 初版作成
-  - Python 3.12対応（`venv312`）
+  - Python 3.12必須（`venv`）
   - OpenAI API統合
   - macOS固有のタイムアウト設定
   - Tokenizer自動設定

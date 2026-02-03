@@ -31,28 +31,10 @@ cd sample-aipref
 
 ```bash
 make setup
-
-# 作成された仮想環境をアクティベート
-# Python 3.12が見つかった場合: venv312
-# それ以外の場合: venv または .venv
-if [ -d venv312 ]; then
-    source venv312/bin/activate
-elif [ -d venv ]; then
-    source venv/bin/activate
-elif [ -d .venv ]; then
-    source .venv/bin/activate
-fi
+source venv/bin/activate
 ```
 
-または、より簡潔に：
-
-```bash
-make setup
-# 作成された仮想環境を自動検出してアクティベート
-[ -d venv312 ] && source venv312/bin/activate || \
-[ -d venv ] && source venv/bin/activate || \
-[ -d .venv ] && source .venv/bin/activate
-```
+**注意**: Python 3.12が必要です。Python 3.12がインストールされていない場合、`make setup`はエラーで終了します。
 
 #### オプションB: uvを使用（推奨）
 
@@ -351,10 +333,7 @@ cd sample-aipref
 
 # 2. Python環境のセットアップ
 make setup
-# 作成された仮想環境をアクティベート
-[ -d venv312 ] && source venv312/bin/activate || \
-[ -d venv ] && source venv/bin/activate || \
-[ -d .venv ] && source .venv/bin/activate
+source venv/bin/activate
 
 # 3. 環境変数の設定
 cp .env.example .env

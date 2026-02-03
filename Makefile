@@ -21,32 +21,37 @@ endif
 setup:
 	@echo "Setting up Python environment..."
 	@if [ -z "$$VIRTUAL_ENV" ]; then \
-		if [ -d venv312 ]; then \
-			echo "Using existing Python 3.12 venv (venv312)"; \
+		if [ -d venv ]; then \
+			echo "Using existing venv"; \
 		else \
 			echo "Checking for Python 3.12..."; \
 			if command -v python3.12 >/dev/null 2>&1 || [ -f "$$HOME/.pyenv/versions/3.12.7/bin/python3" ]; then \
 				echo "Creating Python 3.12 virtual environment..."; \
 				if [ -f "$$HOME/.pyenv/versions/3.12.7/bin/python3" ]; then \
-					$$HOME/.pyenv/versions/3.12.7/bin/python3 -m venv venv312; \
+					$$HOME/.pyenv/versions/3.12.7/bin/python3 -m venv venv || exit 1; \
 				elif command -v python3.12 >/dev/null 2>&1; then \
-					python3.12 -m venv venv312; \
+					python3.12 -m venv venv || exit 1; \
 				fi; \
-				echo "Activate with: source venv312/bin/activate"; \
+				if [ ! -d venv ]; then \
+					echo "Error: Failed to create venv" >&2; \
+					exit 1; \
+				fi; \
+				echo "Activate with: source venv/bin/activate"; \
 			else \
-				echo "Python 3.12 not found. Creating default venv..."; \
-				python3 -m venv venv || python3 -m venv .venv; \
-				echo "Activate with: source venv/bin/activate (or .venv/bin/activate)"; \
+				echo "Error: Python 3.12 not found. Please install Python 3.12 or later." >&2; \
+				echo "  - Using pyenv: pyenv install 3.12.7" >&2; \
+				echo "  - Using Homebrew: brew install python@3.12" >&2; \
+				exit 1; \
 			fi; \
 		fi; \
 	fi
 	@echo "Installing dependencies..."
-	@if [ -d venv312 ]; then \
-		venv312/bin/pip install --upgrade pip; \
-		venv312/bin/pip install -r requirements.txt; \
+	@if [ -d venv ]; then \
+		venv/bin/pip install --upgrade pip || exit 1; \
+		venv/bin/pip install -r requirements.txt || exit 1; \
 	else \
-		pip install --upgrade pip; \
-		pip install -r requirements.txt; \
+		echo "Error: venv directory not found. Please run 'make setup' again." >&2; \
+		exit 1; \
 	fi
 	@echo "Setup complete! Copy .env.example to .env and configure it."
 
