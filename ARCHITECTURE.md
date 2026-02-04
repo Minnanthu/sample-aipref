@@ -31,7 +31,7 @@
 ## リポジトリ構造
 
 ```
-sample-aipref/
+sample-aiperf/
 ├── README.md                    # ユーザー向けドキュメント
 ├── ARCHITECTURE.md             # このファイル（技術ドキュメント）
 ├── Makefile                    # タスク自動化

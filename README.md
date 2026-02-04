@@ -22,7 +22,7 @@ macOS上で動作する、OpenAI互換APIのchat completions（ストリーミ�
 
 ```bash
 git clone <repository-url>
-cd sample-aipref
+cd sample-aiperf
 ```
 
 ### 2. Python環境のセットアップ
