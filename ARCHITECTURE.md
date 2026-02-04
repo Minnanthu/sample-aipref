@@ -237,7 +237,7 @@ AIPerfの`profile`コマンドを実行するラッパースクリプトです�
 5. **実行モードの判定**: 引数（warmup/profile/sweep_*）に応じてArtifactディレクトリを決定
 6. **AIPerfコマンドの構築**: 基本オプション（`-m`, `--endpoint-type chat`, `--streaming`, `--ui-type none`など）を設定
 7. **条件付きオプションの追加**:
-   - APIキー: `--api-key ${OPENAI_API_KEY}`
+   - APIキー: `AIPERF_PROFILE_API_KEY`環境変数として設定（`.env`の`OPENAI_API_KEY`から自動変換）
    - 入力モード: `--input-file`（カスタムプロンプト）または`--synthetic-input-tokens-mean`（Synthetic mode）
    - Tokenizer: `--tokenizer ${TOKENIZER}`（OpenAI API使用時は`gpt2`を自動設定）
    - macOS固有のタイムアウト設定: `AIPERF_SERVICE__*`環境変数をエクスポート
@@ -250,7 +250,7 @@ AIPerfの`profile`コマンドを実行するラッパースクリプトです�
 
 2. **Tokenizerの自動設定**: OpenAI API使用時は、HuggingFaceモデル名が存在しないため、デフォルトで`gpt2`をTokenizerとして使用します。
 
-3. **APIキーの渡し方**: AIPerfは`--api-key`コマンドラインオプションでAPIキーを受け取ります（環境変数だけでは不十分）。
+3. **APIキーの渡し方**: CycloptsのEnv設定により、AIPerfの`profile`サブコマンドは`AIPERF_PROFILE_API_KEY`環境変数からAPIキーを受け取れます。スクリプトは`.env`ファイルの`OPENAI_API_KEY`を自動的に`AIPERF_PROFILE_API_KEY`としてexportし、`--api-key`引数を使わずに実行します。
 
 4. **macOS固有の設定**: pydantic-settingsのネスト設定形式（`AIPERF_SERVICE__REGISTRATION_TIMEOUT`）で環境変数をエクスポートします。
 

@@ -52,8 +52,22 @@ else
     ARTIFACT_DIR="artifacts/${MODE}_ISL${INPUT_TOKENS_MEAN}_OSL${OUTPUT_TOKENS_MEAN}_CON${CONCURRENCY}"
 fi
 
+# AIPerf CLI（Env対応ラッパー経由。venvがあればvenvのpythonを使う）
+PYTHON_BIN="${PYTHON_BIN:-}"
+if [ -z "${PYTHON_BIN}" ]; then
+    if [ -x "venv/bin/python3" ]; then
+        PYTHON_BIN="venv/bin/python3"
+    elif [ -x "venv/bin/python" ]; then
+        PYTHON_BIN="venv/bin/python"
+    else
+        PYTHON_BIN="python3"
+    fi
+fi
+
+AIPERF_CLI="${PYTHON_BIN} scripts/aiperf_cli_env.py"
+
 # AIPerfコマンドの構築
-CMD="aiperf profile \
+CMD="${AIPERF_CLI} profile \
     -m ${MODEL} \
     --endpoint-type chat \
     --streaming \
@@ -64,9 +78,11 @@ CMD="aiperf profile \
     -u ${AIPERF_URL} \
     --artifact-dir ${ARTIFACT_DIR}"
 
-# APIキーが設定されている場合は追加
+# APIキーは環境変数で渡す（--api-keyオプションは使用しない）
+# Cyclopts Env(config) により、profileサブコマンドのAPIキーは `AIPERF_PROFILE_API_KEY` で渡せる。
+# ここでは `.env` の `OPENAI_API_KEY` を橋渡しする。
 if [ -n "${OPENAI_API_KEY:-}" ]; then
-    CMD="${CMD} --api-key ${OPENAI_API_KEY}"
+    export AIPERF_PROFILE_API_KEY="${OPENAI_API_KEY}"
 fi
 
 # INPUT_FILEが指定されている場合はファイル入力モード
@@ -119,6 +135,11 @@ echo "Model: ${MODEL}"
 echo "Concurrency: ${CONCURRENCY}"
 echo "Request Count: ${REQUEST_COUNT}"
 echo "Artifact Dir: ${ARTIFACT_DIR}"
+if [ -n "${AIPERF_PROFILE_API_KEY:-}" ]; then
+    echo "API Key: Using AIPERF_PROFILE_API_KEY environment variable"
+else
+    echo "API Key: Not set (public endpoint or authentication not required)"
+fi
 echo "=========================================="
 echo "Command: ${CMD}"
 echo "=========================================="
