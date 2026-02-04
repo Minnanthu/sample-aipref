@@ -34,7 +34,7 @@ make setup
 source venv/bin/activate
 ```
 
-**注意**: Python 3.12が必要です。Python 3.12がインストールされていない場合、`make setup`はエラーで終了します。
+**注意**: Python 3.11以上が必要です。適切なバージョンがインストールされていない場合、`make setup`はエラーで終了します。
 
 #### オプションB: uvを使用（推奨）
 
@@ -318,7 +318,21 @@ UserWarning: resource_tracker: There appear to be 3 leaked semaphore objects to 
 
 このリポジトリは、Linux検証サーバでも同じコマンドで動作するように設計されています。
 
-### Dockerを使用する場合
+### 実行方法の選択
+
+| 実行方法 | メリット | デメリット | 推奨環境 |
+|---------|---------|----------|---------|
+| **Docker** | 環境の違いを吸収、Pythonバージョン管理不要、クリーンな環境 | 初回ビルドに時間、若干のオーバーヘッド | 本番検証サーバ（推奨） |
+| **ネイティブ** | 高速な反復実行、デバッグが容易、システムリソースを直接利用 | Python環境の構築が必要、環境依存の問題が発生しうる | 開発環境 |
+
+### Dockerを使用する場合（推奨）
+
+#### 前提条件
+
+- Docker Engine 20.10以降
+- Docker Compose 1.29以降
+
+#### セットアップ手順
 
 1. **イメージのビルド**
    ```bash
@@ -345,6 +359,60 @@ UserWarning: resource_tracker: There appear to be 3 leaked semaphore objects to 
 
 ### 直接実行する場合
 
+#### Linux固有の前提条件
+
+**Ubuntu/Debian系の場合:**
+
+```bash
+# システムパッケージのインストール
+sudo apt-get update
+sudo apt-get install -y python3.12 python3.12-venv python3-pip git
+
+# または Python 3.11
+sudo apt-get install -y python3.11 python3.11-venv python3-pip git
+```
+
+**CentOS/RHEL系の場合:**
+
+```bash
+# EPEL リポジトリの有効化（必要に応じて）
+sudo yum install -y epel-release
+
+# システムパッケージのインストール
+sudo yum install -y python3.12 python3.12-devel git
+
+# または Python 3.11
+sudo yum install -y python3.11 python3.11-devel git
+```
+
+#### セットアップ手順
+
+**オプション1: 自動セットアップスクリプト（推奨）**
+
+Linux環境用のワンストップセットアップスクリプトを使用：
+
+```bash
+# 1. リポジトリをクローン
+git clone <repository-url>
+cd sample-aipref
+
+# 2. 自動セットアップスクリプトを実行
+bash scripts/linux-setup.sh
+
+# 3. 環境変数の設定
+cp .env.example .env
+# .env を編集
+
+# 4. 実行
+source venv/bin/activate  # 既にアクティブな場合は不要
+make smoke
+make warmup
+make profile
+make summary
+```
+
+**オプション2: 手動セットアップ**
+
 Linuxサーバ上で、macOSと同じ手順でセットアップ：
 
 ```bash
@@ -367,6 +435,39 @@ make profile
 make summary
 ```
 
+### macOS固有の設定について
+
+`AIPERF_SERVICE__*` 環境変数はmacOSでのサービス登録タイムアウト問題を回避するための設定ですが、
+Linux環境でも無害に動作します。これらの設定は `scripts/run_aiperf_profile.sh` で自動的に設定されるため、
+特別な変更は不要です。
+
+### トラブルシューティング（Linux固有）
+
+#### Python 3.11/3.12が見つからない
+
+- **症状**: `make setup` で "Python 3.11 or later not found" エラー
+- **対処**: 上記の「Linux固有の前提条件」セクションを参照してPythonをインストール
+
+#### venv作成に失敗する
+
+- **症状**: `Error: Failed to create venv`
+- **対処**: `python3-venv`パッケージをインストール
+  ```bash
+  # Ubuntu/Debian
+  sudo apt-get install python3.12-venv
+  
+  # CentOS/RHEL
+  sudo yum install python3.12-devel
+  ```
+
+#### Permission denied エラー
+
+- **症状**: スクリプト実行時に権限エラー
+- **対処**: スクリプトに実行権限を付与
+  ```bash
+  chmod +x scripts/*.sh scripts/*.py
+  ```
+
 ## ディレクトリ構造
 
 ```
@@ -379,7 +480,8 @@ sample-aipref/
 ├── scripts/
 │   ├── run_aiperf_profile.sh # AIPerf実行スクリプト
 │   ├── smoke_stream.py       # 疎通確認スクリプト
-│   └── summarize_export.py   # サマリ生成スクリプト
+│   ├── summarize_export.py   # サマリ生成スクリプト
+│   └── linux-setup.sh        # Linux環境用自動セットアップ
 ├── prompts/
 │   ├── trace.jsonl           # カスタムプロンプトのサンプル
 │   └── README.md             # trace.jsonlのスキーマ説明
