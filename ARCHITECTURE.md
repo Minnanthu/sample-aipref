@@ -814,7 +814,7 @@ UserWarning: resource_tracker: There appear to be 3 leaked semaphore objects to 
 
 ## 参考資料
 
-- [NVIDIA AIPerf公式ドキュメント](https://github.com/NVIDIA/AIPerf)
+- [NVIDIA AIPerf公式ドキュメント](https://github.com/ai-dynamo/aiperf)
 - [OpenAI API Reference](https://platform.openai.com/docs/api-reference/chat)
 - [pydantic-settingsドキュメント](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 - [HuggingFace Transformers](https://huggingface.co/docs/transformers/)
@@ -822,10 +822,3 @@ UserWarning: resource_tracker: There appear to be 3 leaked semaphore objects to 
 ---
 
 ## 更新履歴
-
-- **2024-12**: 初版作成
-  - Python 3.12必須（`venv`）
-  - OpenAI API統合
-  - macOS固有のタイムアウト設定
-  - Tokenizer自動設定
-  - 単位変換ロジックの改善

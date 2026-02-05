@@ -56,7 +56,7 @@ cp .env.example .env
 
 #### OpenAI APIを使用する場合（推奨：プロトタイプ用）
 
-`.env` ファイルを以下のように設定：
+.env ファイルを以下のように設定：
 
 ```bash
 # OpenAI APIを使用（AIPERF_URLは空にするか https://api.openai.com/v1）
@@ -71,7 +71,7 @@ MODEL=gpt-4-small
 
 #### カスタムOpenAI互換サーバを使用する場合
 
-`.env` ファイルを以下のように設定：
+.env ファイルを以下のように設定：
 
 ```bash
 # OpenAI互換推論サーバのURL
@@ -82,7 +82,6 @@ OPENAI_API_KEY=
 
 # モデル名（推論サーバが認識するモデル名）
 MODEL=tsuzumi2
-```
 
 # Tokenizer（任意。トークン数計算に使用）
 # 無い場合でもTTFT/Latencyのp95/p99は算出可能
@@ -191,6 +190,10 @@ MODEL=gpt-4-small
 | `AIPERF_SERVICE_REGISTRATION_INTERVAL` | サービス登録試行間隔（秒） | 2.0 |
 | `AIPERF_SERVICE_REGISTRATION_MAX_ATTEMPTS` | サービス登録最大試行回数 | 20 |
 | `AIPERF_SERVICE_START_TIMEOUT` | サービス起動タイムアウト（秒） | 60.0 |
+
+**Synthetic mode とは？** `INPUT_FILE` が未設定、またはファイルが存在しない場合に使用される入力モードです。  
+この場合、実プロンプトではなく、`INPUT_TOKENS_MEAN/STDDEV` と `OUTPUT_TOKENS_MEAN` で指定したトークン長の疑似リクエストを生成して負荷をかけます。  
+`INPUT_FILE` を指定するとファイル入力モードになり、Synthetic mode 用のパラメータは使用されません。
 
 #### 任意プロンプト入力（ファイル入力モード）
 
@@ -498,7 +501,7 @@ sample-aiperf/
 
 ## 参考資料
 
-- [NVIDIA AIPerf公式ドキュメント](https://github.com/NVIDIA/AIPerf)
+- [NVIDIA AIPerf公式ドキュメント](https://github.com/ai-dynamo/aiperf)
 - [OpenAI API Reference](https://platform.openai.com/docs/api-reference/chat)
 
 ## ライセンス
