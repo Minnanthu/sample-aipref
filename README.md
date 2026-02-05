@@ -111,7 +111,7 @@ INPUT_FILE=
 
 # カスタムデータセットタイプ（INPUT_FILE使用時）
 # 例: single_turn
-CUSTOM_DATASET_TYPE=single_turn
+CUSTOM_DATASET_TYPE=multi_turn
 
 # 追加パラメータ（推論サーバが対応している場合のみ）
 # 例: min_tokens:50,ignore_eos:true
