@@ -22,7 +22,7 @@
 
 - **OpenAI APIとカスタムサーバの両対応**: 環境変数で簡単に切り替え可能
 - **ストリーミング対応**: Chat Completionsのストリーミングレスポンスを測定
-- **詳細なメトリクス**: TTFT、Request Latency、Inter-Token Latencyのp50/p95/p99を計算
+- **詳細なメトリクス**: TTFT、Request Latency、Inter-Token Latencyのp50/p95/p99、Output Tokens/sec (avg) を計算
 - **柔軟な入力モード**: Synthetic modeとカスタムプロンプト（trace.jsonl）の両対応
 - **Docker対応**: Linux環境への移行が容易
 
@@ -286,7 +286,7 @@ OpenAI互換APIへのストリーミング接続をテストするPythonスク�
 
 ### 3. `scripts/summarize_export.py`
 
-AIPerfのexport結果からp50/p95/p99を算出してTSVサマリを生成するPythonスクリプトです。
+AIPerfのexport結果からp50/p95/p99およびOutput Tokens/sec (avg) を算出してTSVサマリを生成するPythonスクリプトです。
 
 #### 処理フロー
 
@@ -301,9 +301,10 @@ AIPerfのexport結果からp50/p95/p99を算出してTSVサマリを生成する
    - 別名（`ttft`, `latency`, `itl`など）も検索
    - 単位変換（ナノ秒→ms、秒→ms）を実行
 5. **パーセンタイルの計算**: p50/p95/p99を線形補間で計算、平均値も算出
-6. **エラー数のカウント**: `error`, `status`, `success`フィールドをチェック
-7. **TSV出力**: `summary.tsv`（Slack貼り付け用）を生成
-8. **Markdown出力**: `summary.md`（人間読み用）を生成
+6. **Output Tokens/sec の計算**: `output_token_count / (request_latency_ms / 1000)` で各リクエストのスループットを計算し、平均値を算出
+7. **エラー数のカウント**: `error`, `status`, `success`フィールドをチェック
+8. **TSV出力**: `summary.tsv`（Slack貼り付け用）を生成
+9. **Markdown出力**: `summary.md`（人間読み用）を生成
 
 #### 重要なポイント
 
@@ -328,7 +329,7 @@ AIPerfのexport結果からp50/p95/p99を算出してTSVサマリを生成する
 | ファイル | 対象スクリプト | テスト内容 |
 |---------|--------------|------------|
 | `test_smoke_stream.py` | `smoke_stream.py` | OpenAI API検出、URL正規化、クライアント作成、ストリーミング処理 |
-| `test_summarize_export.py` | `summarize_export.py` | メトリクス抽出、単位変換、パーセンタイル計算、エラーカウント |
+| `test_summarize_export.py` | `summarize_export.py` | メトリクス抽出、単位変換、パーセンタイル計算、エラーカウント、tokens/sec計算 |
 
 ### テストの実行
 

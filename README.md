@@ -6,7 +6,7 @@ macOS上で動作する、OpenAI互換APIのchat completions（ストリーミ�
 
 - **目的**: ローカルMacから別ホストの推論サーバに対して負荷を生成し、パフォーマンス指標を測定
 - **対象API**: OpenAI互換のchat completionsエンドポイント（ストリーミング対応）
-- **主要指標**: TTFT (Time To First Token), Request Latency, Inter-Token Latency の p50/p95/p99
+- **主要指標**: TTFT (Time To First Token), Request Latency, Inter-Token Latency の p50/p95/p99、Output Tokens/sec (avg)
 - **出力**: Artifacts（JSON/JSONL）とTSVサマリ（Slack貼り付け用）
 
 ## 前提条件
