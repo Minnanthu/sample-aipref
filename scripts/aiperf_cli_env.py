@@ -19,6 +19,24 @@ def main() -> None:
     # Import the upstream CLI App
     from aiperf.cli import app
 
+    # Workaround: OpenAI API rejects empty string for `messages[0].name` (HTTP 400).
+    # AIPerf's ChatEndpoint hotfix may set `name` from `turn.texts[0].name`, which can be "".
+    # We strip the field when it's empty, without modifying site-packages.
+    try:
+        from aiperf.endpoints.openai_chat import ChatEndpoint  # type: ignore
+
+        _orig_set_message_content = ChatEndpoint._set_message_content
+
+        def _patched_set_message_content(self, message, turn):  # type: ignore[no-redef]
+            _orig_set_message_content(self, message, turn)
+            if message.get("name", None) == "":
+                message.pop("name", None)
+
+        ChatEndpoint._set_message_content = _patched_set_message_content  # type: ignore[assignment]
+    except Exception:
+        # Best-effort patch; don't block CLI startup if upstream module layout changes.
+        pass
+
     # Enable env var parsing:
     # - prefix: AIPERF_
     # - command: True => e.g. `profile` subcommand uses `AIPERF_PROFILE_*`
