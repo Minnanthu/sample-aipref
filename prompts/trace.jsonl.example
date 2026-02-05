@@ -1,5 +1,5 @@
-{"messages": [{"role": "user", "content": "What is the capital of Japan?"}]}
-{"messages": [{"role": "user", "content": "Explain quantum computing in simple terms."}]}
-{"messages": [{"role": "user", "content": "Write a haiku about programming."}]}
-{"messages": [{"role": "user", "content": "What are the main differences between Python and JavaScript?"}]}
-{"messages": [{"role": "user", "content": "Describe the process of photosynthesis."}]}
+{"role":"user","text":"What is the capital of Japan?"}
+{"role":"user","text":"Explain quantum computing in simple terms."}
+{"role":"user","text":"Write a haiku about programming."}
+{"role":"user","text":"What are the main differences between Python and JavaScript?"}
+{"role":"user","text":"Describe the process of photosynthesis."}

@@ -54,8 +54,8 @@ cp prompts/trace.jsonl.example prompts/trace.jsonl
 2. `prompts/trace.jsonl` の各行の先頭にnonceを入れる（例）
 
 ```jsonl
-{"messages":[{"role":"user","content":"nonce:2026-02-05T10:12:01Z-0001\nWhat is the capital of Japan?"}]}
-{"messages":[{"role":"user","content":"nonce:2026-02-05T10:12:01Z-0002\nExplain quantum computing in simple terms."}]}
+{"role":"user","text":"nonce:2026-02-05T10:12:01Z-0001\nWhat is the capital of Japan?"}
+{"role":"user","text":"nonce:2026-02-05T10:12:01Z-0002\nExplain quantum computing in simple terms."}
 ```
 
 3. `.env` で `INPUT_FILE` を指定して実行
