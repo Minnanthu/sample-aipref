@@ -14,6 +14,7 @@ from summarize_export import (
     extract_metric_values,
     calculate_percentiles,
     count_errors,
+    extract_tokens_per_sec,
 )
 
 
@@ -194,6 +195,85 @@ class TestCountErrors:
         data = []
         error_count = count_errors(data)
         assert error_count == 0
+
+
+class TestExtractTokensPerSec:
+    """extract_tokens_per_sec関数のテスト"""
+
+    def test_basic_calculation(self):
+        """基本的なtokens/sec計算が正しく行われることを確認"""
+        data = [
+            {"token_count": 100, "request_latency_ms": 1000},  # 100 tokens / 1 sec = 100 tokens/sec
+            {"token_count": 50, "request_latency_ms": 500},   # 50 tokens / 0.5 sec = 100 tokens/sec
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 2
+        assert values[0] == 100.0
+        assert values[1] == 100.0
+
+    def test_with_metrics_dict(self):
+        """metrics辞書内のフィールドからも計算できることを確認"""
+        data = [
+            {"metrics": {"token_count": 200, "request_latency_ms": 1000}},  # 200 tokens/sec
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 1
+        assert values[0] == 200.0
+
+    def test_with_alternative_field_names(self):
+        """別名フィールド（output_tokens, latency）からも計算できることを確認"""
+        data = [
+            {"output_tokens": 150, "latency": 500},  # 150 tokens / 0.5 sec = 300 tokens/sec
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 1
+        assert values[0] == 300.0
+
+    def test_with_dict_values(self):
+        """辞書形式の値（{'value': ...}）からも計算できることを確認"""
+        data = [
+            {
+                "token_count": {"value": 100, "unit": "tokens"},
+                "request_latency_ms": {"value": 500, "unit": "ms"},
+            },  # 100 tokens / 0.5 sec = 200 tokens/sec
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 1
+        assert values[0] == 200.0
+
+    def test_missing_token_count(self):
+        """token_countがない場合はスキップされることを確認"""
+        data = [
+            {"request_latency_ms": 1000},  # token_countがない
+            {"token_count": 100, "request_latency_ms": 1000},  # 正常
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 1
+
+    def test_missing_latency(self):
+        """latencyがない場合はスキップされることを確認"""
+        data = [
+            {"token_count": 100},  # latencyがない
+            {"token_count": 100, "request_latency_ms": 1000},  # 正常
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 1
+
+    def test_zero_latency(self):
+        """latencyが0の場合はスキップされることを確認（ゼロ除算回避）"""
+        data = [
+            {"token_count": 100, "request_latency_ms": 0},  # latencyが0
+            {"token_count": 100, "request_latency_ms": 1000},  # 正常
+        ]
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 1
+        assert values[0] == 100.0
+
+    def test_empty_data(self):
+        """空のデータの場合、空のリストが返されることを確認"""
+        data = []
+        values = extract_tokens_per_sec(data)
+        assert len(values) == 0
 
 
 if __name__ == "__main__":
