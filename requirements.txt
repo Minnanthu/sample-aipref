@@ -1,12 +1,15 @@
 # NVIDIA AIPerf
-aiperf
+# NOTE: CI無し・個人運用では「いつの間にか壊れる」を避けるため、
+#       下限だけでなく上限も付けたレンジ指定にしています。
+#       必要になったら、動作確認した上で上限を更新してください。
+aiperf>=0.4.0,<0.5.0
 
 # OpenAI SDK (for smoke test)
-openai>=1.0.0
+openai>=1.0.0,<2.0.0
 
 # Environment variable management
-python-dotenv>=1.0.0
+python-dotenv>=1.0.0,<2.0.0
 
 # Testing
-pytest>=7.0.0
-pytest-mock>=3.10.0
+pytest>=7.0.0,<9.0.0
+pytest-mock>=3.10.0,<4.0.0
