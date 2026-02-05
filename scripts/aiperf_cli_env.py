@@ -19,15 +19,15 @@ def main() -> None:
     # Import the upstream CLI App
     from aiperf.cli import app
 
-    # Workaround: OpenAI API rejects empty string for `messages[*].name` (HTTP 400).
+    # 回避策: OpenAI API は `messages[*].name` が空文字だと 400 を返します。
     #
-    # AIPerf's ChatEndpoint sets `name` from `turn.texts[0].name` on a fast-path. The `Text.name`
-    # default is "", and AIPerf may also construct messages from previous model outputs that carry
-    # an empty name. On OpenAI, that becomes a 400 error.
+    # AIPerf の ChatEndpoint には高速経路があり、`turn.texts[0].name` をそのまま `name` に入れます。
+    # ところが `Text.name` のデフォルトは ""（空文字）で、さらに AIPerf は過去のモデル出力から
+    # message を再構築する際に空の name を持ち回る場合があります。OpenAI ではこれが 400 になります。
     #
-    # AIPerf uses multiprocessing, so we need the workaround to apply in spawned child processes.
-    # To do that, we install a small `.pth` startup hook into the active environment's site-packages,
-    # which imports a patch module on interpreter startup (including workers).
+    # AIPerf は multiprocessing を使うため、親プロセスだけでなく spawn された子プロセス（worker）にも
+    # 回避策が適用される必要があります。そこで、実行中の環境の site-packages に `.pth` を置き、
+    # Python 起動時（worker 含む）にパッチモジュールが自動 import されるようにしています。
     try:
         import site
         from pathlib import Path
@@ -49,11 +49,11 @@ def main() -> None:
             patch_code = """\
 from __future__ import annotations
 
-# Imported at interpreter startup via .pth to patch multiprocessing workers too.
+# `.pth` 経由で Python 起動時に import され、multiprocessing の子プロセス（worker）にもパッチを当てます。
 #
-# Important: importing `aiperf.endpoints.openai_chat` too early can fail due to aiperf's
-# import order / config initialization. So we try to patch, and if it fails we install a
-# one-shot import hook that patches as soon as the module becomes importable.
+# 注意: `aiperf.endpoints.openai_chat` を早い段階で import すると、AIPerf 側の import 順/設定初期化の関係で
+# 失敗することがあります。まずは素直にパッチ適用を試み、失敗した場合は import hook を入れて
+# モジュールが import 可能になったタイミングで一度だけパッチを適用します。
 
 from typing import Any
 import builtins
@@ -111,16 +111,16 @@ if not _apply_patch():
     builtins.__import__ = _import_hook
 """
 
-            # Write patch module / pth only if missing or different.
+            # パッチモジュール / pth は、無い場合または内容が変わった場合のみ書き込みます。
             if (not patch_py.exists()) or (patch_py.read_text(encoding="utf-8") != patch_code):
                 patch_py.write_text(patch_code, encoding="utf-8")
             if (not patch_pth.exists()) or (patch_pth.read_text(encoding="utf-8").strip() != f"import {patch_module_name}"):
                 patch_pth.write_text(f"import {patch_module_name}\n", encoding="utf-8")
 
-            # Apply patch in the current process too.
+            # 現在のプロセスにも即時適用します。
             __import__(patch_module_name)
     except Exception:
-        # Best-effort patch; don't block CLI startup if upstream module layout changes.
+        # ベストエフォート: 上流の構成が変わっても CLI 起動を止めない。
         pass
 
     # Enable env var parsing:
