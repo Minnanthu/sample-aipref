@@ -118,9 +118,6 @@ CUSTOM_DATASET_TYPE=single_turn
 # 例: min_tokens:50,ignore_eos:true
 # カンマ区切りで複数指定可能
 EXTRA_INPUTS=
-EOF
-
-cp .env.example .env
 ```
 
 `.env` ファイルを編集して、OpenAI API Keyを設定：
@@ -199,11 +196,11 @@ MODEL=gpt-4-small
 
 カスタムプロンプトを使用する場合：
 
-1. `prompts/trace.jsonl` を編集するか、新しいファイルを作成
-   ```jsonl
-   {"messages": [{"role": "user", "content": "Your prompt here"}]}
-   {"messages": [{"role": "user", "content": "Another prompt"}]}
+1. サンプル `prompts/trace.jsonl.example` をコピーして `prompts/trace.jsonl` を作成（`trace.jsonl` はローカル用）
+   ```bash
+   cp prompts/trace.jsonl.example prompts/trace.jsonl
    ```
+   必要に応じて `prompts/trace.jsonl` を編集します。
 
 2. `.env` で `INPUT_FILE` を設定
    ```bash
@@ -394,7 +391,7 @@ Linux環境用のワンストップセットアップスクリプトを使用：
 ```bash
 # 1. リポジトリをクローン
 git clone <repository-url>
-cd sample-aipref
+cd sample-aiperf
 
 # 2. 自動セットアップスクリプトを実行
 bash scripts/linux-setup.sh
@@ -418,7 +415,7 @@ Linuxサーバ上で、macOSと同じ手順でセットアップ：
 ```bash
 # 1. リポジトリをクローン
 git clone <repository-url>
-cd sample-aipref
+cd sample-aiperf
 
 # 2. Python環境のセットアップ
 make setup
@@ -471,7 +468,7 @@ Linux環境でも無害に動作します。これらの設定は `scripts/run_a
 ## ディレクトリ構造
 
 ```
-sample-aipref/
+sample-aiperf/
 ├── README.md                 # このファイル
 ├── Makefile                  # メインのMakefile
 ├── requirements.txt          # Python依存関係
@@ -483,7 +480,7 @@ sample-aipref/
 │   ├── summarize_export.py   # サマリ生成スクリプト
 │   └── linux-setup.sh        # Linux環境用自動セットアップ
 ├── prompts/
-│   ├── trace.jsonl           # カスタムプロンプトのサンプル
+│   ├── trace.jsonl.example   # カスタムプロンプトのサンプル（Git管理）
 │   └── README.md             # trace.jsonlのスキーマ説明
 ├── docker/
 │   ├── Dockerfile            # Dockerイメージ定義

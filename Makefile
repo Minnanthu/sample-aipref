@@ -1,5 +1,8 @@
 .PHONY: setup smoke warmup profile sweep summary test help
 
+# Prefer venv python if available to avoid using a different global Python than `make setup`.
+PYTHON := $(shell if [ -x venv/bin/python3 ]; then echo venv/bin/python3; elif [ -x venv/bin/python ]; then echo venv/bin/python; else echo python3; fi)
+
 # デフォルトターゲット
 help:
 	@echo "Available targets:"
@@ -78,7 +81,7 @@ smoke:
 		exit 1; \
 	fi
 	@echo "Running smoke test..."
-	python3 scripts/smoke_stream.py
+	$(PYTHON) scripts/smoke_stream.py
 
 # Warmup実行（軽い負荷）
 warmup:
@@ -114,11 +117,11 @@ sweep:
 # サマリ生成
 summary:
 	@echo "Generating summary from latest artifacts..."
-	python3 scripts/summarize_export.py
+	$(PYTHON) scripts/summarize_export.py
 	@echo "Summary generated: summary.tsv and summary.md"
 
 # ユニットテスト実行
 test:
 	@echo "Running unit tests..."
-	python3 -m pytest tests/ -v
+	$(PYTHON) -m pytest tests/ -v
 	@echo "All tests completed."

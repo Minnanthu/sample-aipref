@@ -42,6 +42,12 @@ def main():
     
     try:
         from openai import OpenAI
+        # Optional imports for clearer error messages (openai>=1.x)
+        try:
+            from openai import RateLimitError, APIStatusError  # type: ignore
+        except Exception:  # pragma: no cover
+            RateLimitError = None  # type: ignore
+            APIStatusError = None  # type: ignore
         
         # クライアントの作成
         if use_openai_api:
@@ -95,6 +101,24 @@ def main():
         print("Error: openai package not installed. Run 'make setup' first.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
+        # Make quota / rate-limit errors obvious (HTTP 429)
+        status_code = getattr(e, "status_code", None)
+        if status_code is None:
+            resp = getattr(e, "response", None)
+            status_code = getattr(resp, "status_code", None)
+
+        is_rate_limit = (status_code == 429) or (RateLimitError is not None and isinstance(e, RateLimitError))  # type: ignore[arg-type]
+
+        if is_rate_limit:
+            print(f"\n✗ Error occurred: {type(e).__name__}: {e}", file=sys.stderr)
+            print("\nThis looks like HTTP 429 (rate limit / quota exceeded).", file=sys.stderr)
+            if use_openai_api:
+                print("  - Check your OpenAI billing/credits and org/project limits.", file=sys.stderr)
+                print("  - If you just created the key, ensure it's in the correct project.", file=sys.stderr)
+            else:
+                print("  - Check server-side rate limits / quotas.", file=sys.stderr)
+            sys.exit(1)
+
         print(f"\n✗ Error occurred: {type(e).__name__}: {e}", file=sys.stderr)
         print("\nTroubleshooting:", file=sys.stderr)
         print("  1. Check if AIPERF_URL is correct", file=sys.stderr)

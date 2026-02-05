@@ -20,6 +20,9 @@ htmlcov/
 
 # Artifacts
 artifacts/
+# Note: This repo treats JSON/JSONL as generated data by default (bench artifacts, exports, traces).
+# - Local working prompt files like `prompts/trace.jsonl` are intentionally ignored.
+# - Tracked samples should use a non-jsonl extension, e.g. `prompts/trace.jsonl.example`.
 *.jsonl
 *.json
 

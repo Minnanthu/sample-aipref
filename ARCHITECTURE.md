@@ -49,7 +49,7 @@ sample-aiperf/
 │   └── test_summarize_export.py # summarize_export.pyのテスト
 │
 ├── prompts/                    # カスタムプロンプト
-│   ├── trace.jsonl            # サンプルプロンプトファイル
+│   ├── trace.jsonl.example    # サンプルプロンプトファイル（Git管理）
 │   └── README.md              # trace.jsonlスキーマドキュメント
 │
 ├── docker/                     # Docker構成
@@ -124,6 +124,7 @@ OPENAI_API_KEY=  # 認証が必要な場合のみ
 
 **使用例**:
 ```bash
+cp prompts/trace.jsonl.example prompts/trace.jsonl
 INPUT_FILE=prompts/trace.jsonl
 EXTRA_INPUTS=min_tokens:50,ignore_eos:true
 ```

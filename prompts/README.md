@@ -1,6 +1,13 @@
-# Trace.jsonl ファイル形式
+# Trace.jsonl ファイル形式（サンプル: trace.jsonl.example）
 
-このディレクトリには、AIPerfで使用するカスタムプロンプト入力ファイル（trace.jsonl）を配置します。
+このディレクトリには、AIPerfで使用するカスタムプロンプト入力ファイル（`trace.jsonl`）を配置します。
+
+このリポジトリでは、Gitで追跡できるサンプルとして `trace.jsonl.example` を同梱しています。
+実際に使う場合は、まずコピーして `trace.jsonl` を作ってください（`trace.jsonl` は `.gitignore` で無視されます）。
+
+```bash
+cp prompts/trace.jsonl.example prompts/trace.jsonl
+```
 
 ## ファイル形式
 
