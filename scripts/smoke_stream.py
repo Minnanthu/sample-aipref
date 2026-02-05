@@ -42,7 +42,7 @@ def main():
     
     try:
         from openai import OpenAI
-        # Optional imports for clearer error messages (openai>=1.x)
+        # 可能なら例外型も import して、エラーメッセージを分かりやすくする（openai>=1.x）
         try:
             from openai import RateLimitError, APIStatusError  # type: ignore
         except Exception:  # pragma: no cover
@@ -101,7 +101,7 @@ def main():
         print("Error: openai package not installed. Run 'make setup' first.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        # Make quota / rate-limit errors obvious (HTTP 429)
+        # クォータ / レート制限（HTTP 429）を見落としにくくする
         status_code = getattr(e, "status_code", None)
         if status_code is None:
             resp = getattr(e, "response", None)

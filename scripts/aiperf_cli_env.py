@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Run AIPerf CLI with Cyclopts Env config enabled.
+Cyclopts の Env 設定を有効化した状態で AIPerf CLI を実行するラッパーです。
 
-Why:
-- Upstream `aiperf` CLI is built on Cyclopts, which supports env vars via `cyclopts.config.Env`.
-- The packaged `aiperf` CLI in this repo doesn't enable Env config by default, so env vars like
-  `AIPERF_PROFILE_API_KEY` are not picked up unless we inject Env config.
+目的:
+- 上流の `aiperf` CLI は Cyclopts 製で、`cyclopts.config.Env` により環境変数からの設定読み込みに対応しています。
+- しかし、このリポジトリで使う `aiperf` 実行では Env 設定が有効になっていないケースがあり、
+  `AIPERF_PROFILE_API_KEY` のような環境変数が反映されないことがあります。
 
-This wrapper enables it without modifying site-packages.
+このラッパーは、site-packages を直接書き換えずに Env 設定を有効化します。
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from __future__ import annotations
 def main() -> None:
     from cyclopts.config import Env
 
-    # Import the upstream CLI App
+    # 上流の CLI App を import
     from aiperf.cli import app
 
     # 回避策: OpenAI API は `messages[*].name` が空文字だと 400 を返します。
@@ -34,7 +34,7 @@ def main() -> None:
 
         patch_module_name = "aiperf_drop_empty_name_patch"
 
-        # Find the active site-packages directory containing aiperf.
+        # aiperf が入っている site-packages を特定
         sp_candidates = []
         for sp in site.getsitepackages():
             sp_path = Path(sp)
@@ -123,14 +123,14 @@ if not _apply_patch():
         # ベストエフォート: 上流の構成が変わっても CLI 起動を止めない。
         pass
 
-    # Enable env var parsing:
+    # 環境変数からの設定読み込みを有効化:
     # - prefix: AIPERF_
-    # - command: True => e.g. `profile` subcommand uses `AIPERF_PROFILE_*`
+    # - command: True => 例: `profile` サブコマンドは `AIPERF_PROFILE_*` を使用
     #
-    # In particular, `--api-key` becomes `AIPERF_PROFILE_API_KEY`.
+    # 例: `--api-key` は `AIPERF_PROFILE_API_KEY` に対応
     app._config = (Env(prefix="AIPERF_", command=True, show=False),)
 
-    # Execute CLI
+    # CLI 実行
     app()
 
 
