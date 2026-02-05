@@ -127,7 +127,7 @@ if not _apply_patch():
     # - prefix: AIPERF_
     # - command: True => 例: `profile` サブコマンドは `AIPERF_PROFILE_*` を使用
     #
-    # 例: `--api-key` は `AIPERF_PROFILE_API_KEY` に対応
+    # In particular, `--api-key` becomes `AIPERF_PROFILE_API_KEY`.
     app._config = (Env(prefix="AIPERF_", command=True, show=False),)
 
     # CLI 実行

@@ -62,8 +62,8 @@ cp .env.example .env
 # OpenAI APIを使用（AIPERF_URLは空にするか https://api.openai.com/v1）
 AIPERF_URL=
 
-# OpenAI API Key（必須）
-OPENAI_API_KEY=sk-your-api-key-here
+# API Key（必須）
+API_KEY=sk-your-api-key-here
 
 # モデル名（例: gpt-4-small, gpt-4o-mini, gpt-4o）
 MODEL=gpt-4-small
@@ -77,8 +77,8 @@ MODEL=gpt-4-small
 # OpenAI互換推論サーバのURL
 AIPERF_URL=http://192.168.1.100:8000
 
-# OpenAI API Key（認証が必要な場合のみ）
-OPENAI_API_KEY=
+# API Key（認証が必要な場合のみ）
+API_KEY=
 
 # モデル名（推論サーバが認識するモデル名）
 MODEL=tsuzumi2
@@ -122,8 +122,8 @@ EXTRA_INPUTS=
 `.env` ファイルを編集して、OpenAI API Keyを設定：
 
 ```bash
-# OpenAI API Keyを設定（必須）
-OPENAI_API_KEY=sk-your-api-key-here
+# API Keyを設定（必須）
+API_KEY=sk-your-api-key-here
 
 # モデル名を確認（必要に応じて変更）
 MODEL=gpt-4-small
@@ -175,7 +175,7 @@ MODEL=gpt-4-small
 |--------|------|------------|
 | `AIPERF_URL` | 推論サーバのURL（OpenAI API使用時は空） | - |
 | `MODEL` | モデル名（必須） | - |
-| `OPENAI_API_KEY` | APIキー（OpenAI API使用時は必須） | - |
+| `API_KEY` | APIキー（OpenAI API使用時は必須、カスタムサーバでは認証が必要な場合のみ） | - |
 | `CONCURRENCY` | 並行リクエスト数 | 10 |
 | `REQUEST_COUNT` | リクエスト総数 | CONCURRENCY * 3 |
 | `INPUT_TOKENS_MEAN` | 入力トークン数の平均（synthetic mode） | 100 |
@@ -283,7 +283,7 @@ artifacts/
 
 ### エラー: Authentication failed
 
-認証が必要な場合、`OPENAI_API_KEY` を設定してください。
+認証が必要な場合、`API_KEY` を設定してください。
 
 ### Smoke testが失敗する
 

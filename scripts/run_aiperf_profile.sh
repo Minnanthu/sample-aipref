@@ -22,8 +22,8 @@ fi
 
 # AIPERF_URLが空の場合はOpenAI APIを使用
 if [ -z "${AIPERF_URL:-}" ]; then
-    if [ -z "${OPENAI_API_KEY:-}" ]; then
-        echo "Error: Either AIPERF_URL or OPENAI_API_KEY must be set in .env" >&2
+    if [ -z "${API_KEY:-}" ]; then
+        echo "Error: Either AIPERF_URL or API_KEY must be set in .env" >&2
         exit 1
     fi
     # OpenAI APIを使用する場合、URLを設定
@@ -80,9 +80,9 @@ CMD="${AIPERF_CLI} profile \
 
 # APIキーは環境変数で渡す（--api-keyオプションは使用しない）
 # Cyclopts Env(config) により、profileサブコマンドのAPIキーは `AIPERF_PROFILE_API_KEY` で渡せる。
-# ここでは `.env` の `OPENAI_API_KEY` を橋渡しする。
-if [ -n "${OPENAI_API_KEY:-}" ]; then
-    export AIPERF_PROFILE_API_KEY="${OPENAI_API_KEY}"
+# ここでは `.env` の `API_KEY` を橋渡しする。
+if [ -n "${API_KEY:-}" ]; then
+    export AIPERF_PROFILE_API_KEY="${API_KEY}"
 fi
 
 # INPUT_FILEが指定されている場合はファイル入力モード
@@ -96,9 +96,10 @@ else
         --output-tokens-mean ${OUTPUT_TOKENS_MEAN}"
 fi
 
-# OPENAI_API_KEYが設定されている場合は追加
-if [ -n "${OPENAI_API_KEY:-}" ]; then
-    export OPENAI_API_KEY
+# API_KEYが設定されている場合は追加（OpenAI SDK互換のためOPENAI_API_KEYとしてもexport）
+if [ -n "${API_KEY:-}" ]; then
+    export API_KEY
+    export OPENAI_API_KEY="${API_KEY}"
 fi
 
 # AIPerfのタイムアウト設定を延長（macOSでのサービス登録タイムアウト問題回避）

@@ -95,12 +95,12 @@ sample-aiperf/
 MODEL=gpt-3.5-turbo
 
 # OpenAI APIを使用する場合
-OPENAI_API_KEY=sk-your-api-key-here
+API_KEY=sk-your-api-key-here
 AIPERF_URL=  # 空またはhttps://api.openai.com/v1
 
 # カスタムOpenAI互換サーバを使用する場合
 AIPERF_URL=http://192.168.1.100:8000
-OPENAI_API_KEY=  # 認証が必要な場合のみ
+API_KEY=  # 認証が必要な場合のみ
 ```
 
 #### ベンチマークパラメータ
@@ -233,12 +233,12 @@ AIPerfの`profile`コマンドを実行するラッパースクリプトです�
 
 1. **`.env`ファイルの読み込み**: `set -a; source .env; set +a`で環境変数を自動エクスポート
 2. **必須環境変数のチェック**: `MODEL`が設定されているか確認
-3. **OpenAI APIの自動検出**: `AIPERF_URL`が空の場合、`OPENAI_API_KEY`をチェックしてOpenAI APIを使用
+3. **OpenAI APIの自動検出**: `AIPERF_URL`が空の場合、`API_KEY`をチェックしてOpenAI APIを使用
 4. **デフォルト値の設定**: 各パラメータにデフォルト値を設定（`.env`で上書き可能）
 5. **実行モードの判定**: 引数（warmup/profile/sweep_*）に応じてArtifactディレクトリを決定
 6. **AIPerfコマンドの構築**: 基本オプション（`-m`, `--endpoint-type chat`, `--streaming`, `--ui-type none`など）を設定
 7. **条件付きオプションの追加**:
-   - APIキー: `AIPERF_PROFILE_API_KEY`環境変数として設定（`.env`の`OPENAI_API_KEY`から自動変換）
+   - APIキー: `AIPERF_PROFILE_API_KEY`環境変数として設定（`.env`の`API_KEY`から自動変換）
    - 入力モード: `--input-file`（カスタムプロンプト）または`--synthetic-input-tokens-mean`（Synthetic mode）
    - Tokenizer: `--tokenizer ${TOKENIZER}`（OpenAI API使用時は`gpt2`を自動設定）
    - macOS固有のタイムアウト設定: `AIPERF_SERVICE__*`環境変数をエクスポート
@@ -247,11 +247,11 @@ AIPerfの`profile`コマンドを実行するラッパースクリプトです�
 
 #### 重要なポイント
 
-1. **OpenAI APIの自動検出**: `AIPERF_URL`が空で`OPENAI_API_KEY`が設定されている場合、自動的にOpenAI APIを使用します。
+1. **OpenAI APIの自動検出**: `AIPERF_URL`が空で`API_KEY`が設定されている場合、自動的にOpenAI APIを使用します。
 
 2. **Tokenizerの自動設定**: OpenAI API使用時は、HuggingFaceモデル名が存在しないため、デフォルトで`gpt2`をTokenizerとして使用します。
 
-3. **APIキーの渡し方**: CycloptsのEnv設定により、AIPerfの`profile`サブコマンドは`AIPERF_PROFILE_API_KEY`環境変数からAPIキーを受け取れます。スクリプトは`.env`ファイルの`OPENAI_API_KEY`を自動的に`AIPERF_PROFILE_API_KEY`としてexportし、`--api-key`引数を使わずに実行します。
+3. **APIキーの渡し方**: CycloptsのEnv設定により、AIPerfの`profile`サブコマンドは`AIPERF_PROFILE_API_KEY`環境変数からAPIキーを受け取れます。スクリプトは`.env`ファイルの`API_KEY`を自動的に`AIPERF_PROFILE_API_KEY`としてexportし、`--api-key`引数を使わずに実行します。
 
 4. **macOS固有の設定**: pydantic-settingsのネスト設定形式（`AIPERF_SERVICE__REGISTRATION_TIMEOUT`）で環境変数をエクスポートします。
 
@@ -265,7 +265,7 @@ OpenAI互換APIへのストリーミング接続をテストするPythonスク�
 
 #### 処理フロー
 
-1. **環境変数の取得**: `.env`から`AIPERF_URL`, `MODEL`, `OPENAI_API_KEY`を読み込み
+1. **環境変数の取得**: `.env`から`AIPERF_URL`, `MODEL`, `API_KEY`を読み込み
 2. **OpenAI APIの検出**: `AIPERF_URL`が空またはOpenAIのURLの場合、OpenAI SDKのデフォルト設定を使用
 3. **クライアントの作成**:
    - OpenAI API使用時: `OpenAI(api_key=api_key)`（`base_url`はデフォルト）
@@ -609,7 +609,7 @@ Dockerコンテナのエントリーポイントスクリプトです。
 
 **解決策**:
 - OpenAI API使用時は、自動的に`gpt2`をTokenizerとして設定
-- `AIPERF_URL`が空の場合、`OPENAI_API_KEY`をチェックしてOpenAI APIを使用
+- `AIPERF_URL`が空の場合、`API_KEY`をチェックしてOpenAI APIを使用
 - `--api-key`コマンドラインオプションでAPIキーを明示的に渡す
 
 ### 3. macOS サービス登録タイムアウト
@@ -701,9 +701,9 @@ TOKENIZER=gpt2
 
 **原因**: APIキーが正しく渡されていません。
 
-**解決策**: `OPENAI_API_KEY`を`.env`に設定してください:
+**解決策**: `API_KEY`を`.env`に設定してください:
 ```bash
-OPENAI_API_KEY=sk-your-api-key-here
+API_KEY=sk-your-api-key-here
 ```
 
 `scripts/run_aiperf_profile.sh`で`--api-key`コマンドラインオプションを使用してAPIキーを明示的に渡しています。

@@ -15,7 +15,7 @@ def main():
     # 環境変数の取得
     url = os.getenv("AIPERF_URL", "").strip().rstrip("/")
     model = os.getenv("MODEL", "")
-    api_key = os.getenv("OPENAI_API_KEY", "")
+    api_key = os.getenv("API_KEY", "")
     
     if not model:
         print("Error: MODEL is not set in .env", file=sys.stderr)
@@ -26,7 +26,7 @@ def main():
     
     if use_openai_api:
         if not api_key:
-            print("Error: OPENAI_API_KEY is required when using OpenAI API", file=sys.stderr)
+            print("Error: API_KEY is required when using OpenAI API", file=sys.stderr)
             sys.exit(1)
         url = None  # OpenAI SDKのデフォルトを使用
         endpoint = "https://api.openai.com/v1/chat/completions"
@@ -123,7 +123,7 @@ def main():
         print("\nTroubleshooting:", file=sys.stderr)
         print("  1. Check if AIPERF_URL is correct", file=sys.stderr)
         print("  2. Check if MODEL name matches the server", file=sys.stderr)
-        print("  3. Check if OPENAI_API_KEY is set (if required)", file=sys.stderr)
+        print("  3. Check if API_KEY is set (if required)", file=sys.stderr)
         print("  4. Check network connectivity to the server", file=sys.stderr)
         sys.exit(1)
 

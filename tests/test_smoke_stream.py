@@ -53,17 +53,17 @@ class TestSmokeStream:
             url = f"http://{url}"
         assert url == "https://example.com:8000"
     
-    @patch.dict(os.environ, {"MODEL": "", "AIPERF_URL": "", "OPENAI_API_KEY": ""})
+    @patch.dict(os.environ, {"MODEL": "", "AIPERF_URL": "", "API_KEY": ""})
     def test_missing_model_env_var(self):
         """MODEL環境変数が設定されていない場合のエラー検証"""
         model = os.getenv("MODEL", "")
         assert model == ""
     
-    @patch.dict(os.environ, {"MODEL": "gpt-3.5-turbo", "AIPERF_URL": "", "OPENAI_API_KEY": ""})
+    @patch.dict(os.environ, {"MODEL": "gpt-3.5-turbo", "AIPERF_URL": "", "API_KEY": ""})
     def test_missing_api_key_for_openai(self):
         """OpenAI API使用時にAPIキーが設定されていない場合のエラー検証"""
         url = os.getenv("AIPERF_URL", "").strip().rstrip("/")
-        api_key = os.getenv("OPENAI_API_KEY", "")
+        api_key = os.getenv("API_KEY", "")
         use_openai_api = not url or url == "https://api.openai.com/v1" or url == "https://api.openai.com"
         
         assert use_openai_api is True
