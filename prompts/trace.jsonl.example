@@ -1,5 +1,5 @@
-{"role":"user","text":"What is the capital of Japan?"}
-{"role":"user","text":"Explain quantum computing in simple terms."}
-{"role":"user","text":"Write a haiku about programming."}
-{"role":"user","text":"What are the main differences between Python and JavaScript?"}
-{"role":"user","text":"Describe the process of photosynthesis."}
+{"role":"user","texts":[{"name":"prompt","contents":["What is the capital of Japan?"]}]}
+{"role":"user","texts":[{"name":"prompt","contents":["Explain quantum computing in simple terms."]}]}
+{"role":"user","texts":[{"name":"prompt","contents":["Write a haiku about programming."]}]}
+{"role":"user","texts":[{"name":"prompt","contents":["What are the main differences between Python and JavaScript?"]}]}
+{"role":"user","texts":[{"name":"prompt","contents":["Describe the process of photosynthesis."]}]}

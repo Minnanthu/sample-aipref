@@ -22,11 +22,19 @@ JSONL は、**1行＝1JSON** の形式です。
 
 ### スキーマ（SingleTurn: `CUSTOM_DATASET_TYPE=single_turn`）
 
-各行のJSONは、少なくとも1つのモダリティ（`text`/`texts`/`image`/`images`/`audio`/`audios` のいずれか）を含む必要があります。
+各行のJSONは、少なくとも1つのモダリティ（`text`/`texts`/`image`/`images`/`audio`/`audios` のいずれか）を含む必要があります。  
+なお、OpenAI API では `messages[*].name` が **空文字だと 400** になるため、このリポジトリのサンプルでは `texts`（`name` 付き）を推奨します。
+
 テキストのみの最小例は以下です：
 
 ```json
 {"text": "Your prompt here"}
+```
+
+OpenAI API向けの推奨例（`name` 付き）：
+
+```json
+{"role":"user","texts":[{"name":"prompt","contents":["Your prompt here"]}]}
 ```
 
 `role`（任意）を付けることもできます（通常は `"user"`）：
@@ -44,9 +52,9 @@ JSONL は、**1行＝1JSON** の形式です。
 ### 使用例
 
 ```jsonl
-{"role":"user","text":"Hello, how are you?"}
-{"role":"user","text":"What is 2+2?"}
-{"role":"user","text":"Tell me a joke."}
+{"role":"user","texts":[{"name":"prompt","contents":["Hello, how are you?"]}]}
+{"role":"user","texts":[{"name":"prompt","contents":["What is 2+2?"]}]}
+{"role":"user","texts":[{"name":"prompt","contents":["Tell me a joke."]}]}
 ```
 
 ### 使用方法
@@ -71,7 +79,7 @@ MultiTurn は **1行＝1セッション（会話）**で、`turns` に複数の 
 最小例は以下です：
 
 ```json
-{"session_id":"s1","turns":[{"role":"user","text":"Hello"},{"role":"assistant","text":"Hi!"}]}
+{"session_id":"s1","turns":[{"role":"user","texts":[{"name":"prompt","contents":["Hello"]}]},{"role":"assistant","texts":[{"name":"prompt","contents":["Hi!"]}]}]}
 ```
 
 ### 注意事項

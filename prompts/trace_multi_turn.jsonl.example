@@ -1,2 +1,2 @@
-{"session_id":"s1","turns":[{"role":"user","text":"日本の首都は？"},{"role":"assistant","text":"東京です。"},{"role":"user","text":"じゃあ人口は？"}]}
-{"session_id":"s2","turns":[{"role":"user","text":"Summarize this in one sentence: Large language models generate text by predicting the next token."},{"role":"assistant","text":"They generate text by repeatedly predicting the most likely next token from context."}]}
+{"session_id":"s1","turns":[{"role":"user","texts":[{"name":"prompt","contents":["日本の首都は？"]}]},{"role":"assistant","texts":[{"name":"prompt","contents":["東京です。"]}]},{"role":"user","texts":[{"name":"prompt","contents":["じゃあ人口は？"]}]}]}
+{"session_id":"s2","turns":[{"role":"user","texts":[{"name":"prompt","contents":["Summarize this in one sentence: Large language models generate text by predicting the next token."]}]},{"role":"assistant","texts":[{"name":"prompt","contents":["They generate text by repeatedly predicting the most likely next token from context."]}]}]}
